@@ -57,7 +57,7 @@ public class SparkWeb {
          String request= req.queryParams("number");
          URL API = new URL("https://6ep8eyd0p5.execute-api.us-east-1.amazonaws.com/Beta?value="+request);  		
           URLConnection con = API.openConnection();          
-          String answer = null;
+          String answer = "";
           in = new BufferedReader(new InputStreamReader( con.getInputStream()));  		
   		System.err.println("Conectado");
   		BufferedReader stdIn = new BufferedReader(
