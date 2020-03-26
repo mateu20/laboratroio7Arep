@@ -4,10 +4,11 @@
  * and open the template in the editor.
  */
 package edu.edi.arep.laboratorio7.spark;
-import java.util.List;
-import edu.edi.arep.laboratorio7.MathServices;
-import spark.Request;
-import spark.Response;
+import java.io.BufferedReader;
+import static java.lang.System.in;
+import java.io.*;
+import java.net.*;
+import spark.*;
 import static spark.Spark.*;
 /**
  *
@@ -37,7 +38,7 @@ public class SparkWeb {
                 + "<h2>Square of a Number</h2>\n"
                 + "<form action=\"/calcular\">\n"
                 + "  Ingrese dato para calcular su valor al cuadrado:<br>\n"
-                + "  <input type=\"text\" name=\"Ingrese valor\">\n"
+                + "  <input type=\"text\" name=\"number\">\n"
                 + "  <br>\n"
                 + "  <input type=\"submit\" value=\"calcular\">\n"
                 + "</form>\n"
@@ -51,11 +52,21 @@ public class SparkWeb {
      * @param res Pide informacion respecto a las respuestas HTML
      * @return el resultado de la desviacion y la media 
      */
-    private static String CalcularPage(Request req, Response res) {
-        String numero = req.queryParams("Ingrese valor");
- 
-        int cuadrado = MathServices.square(Integer.parseInt(numero));
-        
+    private static String CalcularPage(Request req, Response res) throws IOException {
+    	 BufferedReader in = null;
+         String request= req.queryParams("number");
+         URL API = new URL("https://6ep8eyd0p5.execute-api.us-east-1.amazonaws.com/Beta?value="+request);  		
+          URLConnection con = API.openConnection();          
+          String answer = null;
+          in = new BufferedReader(new InputStreamReader( con.getInputStream()));  		
+  		System.err.println("Conectado");
+  		BufferedReader stdIn = new BufferedReader(
+  		new InputStreamReader(System.in));
+  		String line;                  
+  		while ((line = in.readLine()) != null) { 
+                          answer+=line;
+  			System.out.println(line); 
+  		}
         
          String pageContent
                 = "<!DOCTYPE html>"
@@ -66,9 +77,7 @@ public class SparkWeb {
                 + "<body>\n"
                 + "<h2>Square of a Number</h2>\n"
                 + "<p> Los resultados para la desviacion estandar y la media son</p>\n"
-                + "<p>El resultado de la desviacion es:"+cuadrado+"</p>\n"
-                        
-                    
+                + "<p>El resultado de la desviacion es:"+answer+"</p>\n"                   
                 + "</body>\n"
                 + "</html>\n";
         return pageContent;
